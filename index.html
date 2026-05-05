@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مُساعد</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+  --gold: #f0c060;
+  --dark: #08090f;
+}
+
+body {
+  margin: 0;
+  font-family: 'Tajawal', sans-serif;
+  background: var(--dark);
+  color: white;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.left {
+  flex: 1;
+  padding: 40px;
+}
+
+/* ===== العنوان ===== */
+h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  background: linear-gradient(45deg, white, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== شريط التقدم الحقيقي ===== */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.fill {
+  height: 100%;
+  width: 33%;
+  background: var(--gold);
+  transition: width 0.4s ease;
+}
+
+/* ===== الخيارات (3 جنب بعض) ===== */
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.options input { display: none; }
+
+.options span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+  font-size: 14px;
+}
+
+.options input:checked + span {
+  background: rgba(240,192,96,0.2);
+  color: var(--gold);
+  transform: scale(1.05);
+}
+
+/* ===== الأزرار ===== */
+.btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-btn { background: #333; color: white; }
+.whatsapp { background: var(--gold); }
+
+/* ===== التفاصيل ===== */
+.extra {
+  display: none;
+  margin-top: 15px;
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  border-radius: 14px;
+}
+
+/* ملاحظات */
+textarea {
+  width: 100%;
+  height: 80px;
+  resize: vertical;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* تاريخ */
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+/* صورة */
+.extra img {
+  width: 150px;
+  display: block;
+  margin: 10px auto;
+}
+
+/* ===== موبايل ===== */
+@media (max-width: 768px) {
+  .left {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  /* على الجوال 2 جنب بعض */
+  .options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="left">
+
+    <h1>مُساعد</h1>
+
+    <!-- شريط التقدم -->
+    <div class="progress-bar">
+      <div class="fill" id="fill"></div>
+    </div>
+
+    <!-- الخيارات -->
+    <div class="options">
+
+      <label><input type="radio" name="s" value="حلقة بحث"><span>📄 حلقة بحث</span></label>
+      <label><input type="radio" name="s" value="مشروع تخرج"><span>🎓 مشروع تخرج</span></label>
+      <label><input type="radio" name="s" value="لوغو"><span>🎨 لوغو</span></label>
+      <label><input type="radio" name="s" value="شعار"><span>✨ شعار</span></label>
+      <label><input type="radio" name="s" value="CV / سيرة ذاتية"><span>📋 CV</span></label>
+      <label><input type="radio" name="s" value="بانر / إعلان"><span>🖼️ بانر</span></label>
+
+      <label style="grid-column: span 3;">
+        <input type="radio" name="s" value="موقع ويب">
+        <span>🌐 موقع ويب</span>
+      </label>
+
+    </div>
+
+    <!-- زر التفاصيل -->
+    <button class="btn add-btn" onclick="openExtra()">➕ إضافة تفاصيل</button>
+
+    <!-- التفاصيل -->
+    <div class="extra" id="extraBox">
+
+      <textarea placeholder="اكتب ملاحظاتك هون..."></textarea>
+
+      <input type="date" id="deliveryDate">
+
+      <input type="file" accept=".pdf">
+
+      <img src="uu.jpeg" alt="barcode">
+
+    </div>
+
+    <!-- إرسال -->
+    <button class="btn whatsapp" onclick="send()">📱 إرسال عبر واتساب</button>
+
+  </div>
+
+</div>
+
+<script>
+
+/* فتح التفاصيل + تحديث الشريط */
+function openExtra() {
+  document.getElementById("extraBox").style.display = "block";
+  setProgress(2);
+}
+
+/* شريط التقدم */
+function setProgress(n) {
+  let fill = document.getElementById("fill");
+
+  if (n === 1) fill.style.width = "33%";
+  if (n === 2) fill.style.width = "66%";
+  if (n === 3) fill.style.width = "100%";
+}
+
+/* تسعير */
+function getPrice(service) {
+  switch(service) {
+    case "حلقة بحث": return 10;
+    case "مشروع تخرج": return 50;
+    case "لوغو": return 15;
+    case "شعار": return 12;
+    case "CV / سيرة ذاتية": return 8;
+    case "بانر / إعلان": return 12;
+    case "موقع ويب": return 80;
+    default: return 0;
+  }
+}
+
+/* إرسال */
+function send() {
+  let choice = document.querySelector('input[name="s"]:checked');
+  let notes = document.querySelector("textarea").value;
+  let date = document.getElementById("deliveryDate").value;
+
+  if (!choice) {
+    alert("اختر خدمة أولاً");
+    return;
+  }
+
+  setProgress(3);
+
+  let price = getPrice(choice.value);
+
+  let msg = "📌 الطلب: " + choice.value + "\n";
+  msg += "💰 السعر: " + price + "$\n";
+  msg += "📅 التسليم: " + (date || "غير محدد") + "\n";
+  msg += "📝 ملاحظات: " + notes;
+
+  window.open("https://wa.me/9647848493004?text=" + encodeURIComponent(msg));
+}
+
+</script>
+
+</body>
+</html>
